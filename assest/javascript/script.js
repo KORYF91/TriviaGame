@@ -158,12 +158,11 @@ function showResults() {
 }
 //THIS HOW THE TIMER IS WORKING. THE COUNTER VAR IS DECREMENTING AND LINE 66 IS HOW THIS IS DISPLAYING ON THE PAGE.
 function countdown() {
-    
-    if (counter > 0) {
-        counter--;
-    } else  {
+    counter--;
+    if (counter == 0) {
         stop();
-        alert('TIME IS UP');    
+        alert('TIME IS UP');  
+        number = 120;  
         for (var i = 0; i < questions.length; i++) {
             //THIS METHOD IS RUNNING THROUGH THE INPUT FROM THE USER AND "MARKING CORRECT OR INCORRECT"
             $.each($("input[name='question-" + i + "']:checked"), function () {

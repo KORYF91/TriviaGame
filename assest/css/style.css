@@ -1,0 +1,21 @@
+*{
+    background : purple;
+    color : white;
+}
+h1 {
+    font-size: 100px;
+    color: red;
+    text-align: center;
+}
+#start {
+    background-color: whitesmoke;
+    color: black;
+}
+#reset {
+    background-color: whitesmoke;
+    color: blue;
+    padding: 0 auto;
+    width: 10 10 10 10px;
+    height: 10 10 10 10px;
+
+}
