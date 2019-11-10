@@ -1,9 +1,10 @@
 console.log("testing testing :  2 3 1");
 // FIRST WE NEED TO CLAIM VARIABLES FOR THE GAME.
-var counter = 180;
+var counter = 120;
+var counterRunning = false;
 var timer;
 var startBtn = $("#start");
-var stopBtn = $("#stop");
+// var stopBtn = $("#stop");
 var correct = 0;
 var incorrect = 0;
 //HERE IS THE QUESTIONS TO BE ASKED AND ANSWERS STORED AS OBJECTS IN AN ARRAY TO BE CALLED ON FOR THE USER TO ANSWER. 
@@ -105,15 +106,16 @@ var questions = [
         correctAnswer: 'TRUE'
     },
     {
-        question: "Nintendo intended to release another gaming console?",
+        question: "Nintendo intended to release another gaming console to surpass The Super Nitendo Consule?",
         choices: ['TRUE', 'FALSE'],
         correctAnswer: 'FALSE'
     },
-  
+
 ]
-// THIS FUNCTION BEGIN THE TIMER ALONG WITH SHOWING THE QUESTIONS AND ANSWERS TO THE ARRAY.
+// THIS FUNCTION BEGIN THE TIMER ALONG WITH DISPLAYS THE QUESTIONS AND ANSWERS TO THE ARRAY.
 $(document).on("click", "#start", function () {
     timer = setInterval(countdown, 1000);
+    counterRunning = true;
     for (var i = 0; i < questions.length; i++) {
         $("#quiz-area").append("<h2>" + questions[i].question + "</h2>")
         for (var j = 0; j < questions[i].choices.length; j++) {
@@ -137,7 +139,7 @@ $(document).on("click", "#done", function () {
         })
 
     };
-//HERE IS THERE ORIGINAL EACH FUNCTION TO CHECK THE ANSWER, WITH THE HELP OF MY TUTOR WE WORKED OUT A BETTER "DRYER" FORMULA.
+    //HERE IS THERE ORIGINAL EACH FUNCTION TO CHECK THE ANSWER, WITH THE HELP OF MY TUTOR WE WORKED OUT A BETTER "DRYER" FORMULA.
     // $.each($("input[name='question-0']:checked"), function () {
     //     if ($(this.val() === questions[0].correctAnswer)) {
     //         correct++
@@ -156,22 +158,43 @@ function showResults() {
 }
 //THIS HOW THE TIMER IS WORKING. THE COUNTER VAR IS DECREMENTING AND LINE 66 IS HOW THIS IS DISPLAYING ON THE PAGE.
 function countdown() {
-    counter--;
-    $("#timer").html(counter);
-    if (counter == 0) {
+    
+    if (counter > 0) {
+        counter--;
+    } else  {
+        stop();
+        alert('TIME IS UP');    
+        for (var i = 0; i < questions.length; i++) {
+            //THIS METHOD IS RUNNING THROUGH THE INPUT FROM THE USER AND "MARKING CORRECT OR INCORRECT"
+            $.each($("input[name='question-" + i + "']:checked"), function () {
+                if ($(this).val() === questions[i].correctAnswer) {
+                    correct++
+                }
+                else {
+                    incorrect++;
+                }
+            })
+    
+        };
+
+        showResults();
         console.log("Time is up")
-    }
+    } 
+    
+    $("#timer").html(counter);
+
 }
 //THIS FUNCTION STOPS THE TIME. THOUGH I AM THINKING THIS BUTTON SHOULD BE REMOVED. 
-$(document).on("click", "#stop", function () {
-    console.log("stop timer")
-    clearInterval(timer);
-    $("#timer").html(counter);
-})
+// $(document).on("click", "#stop", function () {
+//     console.log("stop timer")
+//     clearInterval(timer);
+//     $("#timer").html(counter);
+// })
 // THIS FUNCTION ONLY RESETS THE TIMER, THIS NEEDS TO RESRT THE ENTIRE PAGE. 
 $(document).on("click", "#reset", function () {
-    counter =  180;
+    counter = 120;
     $("#timer").html(counter);
+    
 
     timer = setInterval(countdown, 1000);
     for (var i = 0; i < questions.length; i++) {
