@@ -1,12 +1,13 @@
 console.log("testing testing :  2 3 1");
 // FIRST WE NEED TO CLAIM VARIABLES FOR THE GAME.
-var counter = 120;
+var counter = 10;
 var counterRunning = false;
 var timer;
 var startBtn = $("#start");
 // var stopBtn = $("#stop");
 var correct = 0;
 var incorrect = 0;
+var startGame = false;
 //HERE IS THE QUESTIONS TO BE ASKED AND ANSWERS STORED AS OBJECTS IN AN ARRAY TO BE CALLED ON FOR THE USER TO ANSWER. 
 //THERE ARE ABOUT 20 QUESTIONS LEFT TO ENTER WITH VALUES.
 var questions = [
@@ -111,21 +112,64 @@ var questions = [
         correctAnswer: 'FALSE'
     },
 
-]
-// THIS FUNCTION BEGIN THE TIMER ALONG WITH DISPLAYS THE QUESTIONS AND ANSWERS TO THE ARRAY.
-$(document).on("click", "#start", function () {
-    timer = setInterval(countdown, 1000);
-    counterRunning = true;
-    for (var i = 0; i < questions.length; i++) {
-        $("#quiz-area").append("<h2>" + questions[i].question + "</h2>")
-        for (var j = 0; j < questions[i].choices.length; j++) {
-            $("#quiz-area").append("<input type='radio' name='question-" + i + "'value ='" + questions[i].choices[j] + "''>" + questions[i].choices[j]);
-        }
+];
+
+function startProg() {
+    if (startGame === true) {
+        console.log("clicke on start button again")
     }
-    $("#quiz-area").append("<button id='done'>Done</button>");
-})
+    if (startGame === false) {
+        console.log("on click");
+        startGame = true;
+
+        console.log("start game when click: " + startGame)
+        timer = setInterval(countdown, 1000);
+        counterRunning = true;
+        for (var i = 0; i < questions.length; i++) {
+            $("#quiz-area").append("<h2>" + questions[i].question + "</h2>")
+            for (var j = 0; j < questions[i].choices.length; j++) {
+                $("#quiz-area").append("<input type='radio' name='question-" + i + "'value ='" + questions[i].choices[j] + "''>" + questions[i].choices[j]);
+            }
+        }
+        $("#quiz-area").append("<button id='done'>Done</button>");
+
+    }
+
+}
+// THIS FUNCTION BEGIN THE TIMER ALONG WITH DISPLAYS THE QUESTIONS AND ANSWERS TO THE ARRAY.
+$(document).on("click", "#startBTn", startProg)
+
+
+
+function countdown() {
+    counter--;
+    $("#timer").html(counter);
+    if (counter == 0) {
+        clearInterval(timer)
+        alert('TIME IS UP');
+        number = 120;
+        for (var i = 0; i < questions.length; i++) {
+            //THIS METHOD IS RUNNING THROUGH THE INPUT FROM THE USER AND "MARKING CORRECT OR INCORRECT"
+            $.each($("input[name='question-" + i + "']:checked"), function () {
+                if ($(this).val() === questions[i].correctAnswer) {
+                    correct++
+                }
+                else {
+                    incorrect++;
+                }
+            })
+
+        };
+
+        showResults();
+        console.log("Time is up")
+    }
+}
 // THIS FUNCTION WILL ACTIVATED ONCE THE USER AS ANSWERED ALL QUESTIONS AND TAKE ALL INPUT 
 $(document).on("click", "#done", function () {
+    clearInterval(timer);
+    counter=0;
+    $("#timer").html(counter);
     //use for loop to check answers.
     for (var i = 0; i < questions.length; i++) {
         //THIS METHOD IS RUNNING THROUGH THE INPUT FROM THE USER AND "MARKING CORRECT OR INCORRECT"
@@ -153,36 +197,13 @@ $(document).on("click", "#done", function () {
 // HERE THE DATA PASSED TO THE VARIABLE CORRECT AND INCORRECT TO DISPLAY HOW THE USER DID. 
 // I NEED TO ADD TO THE FUNCTION TO INCOPERATE ONCE THE TIMER IS DONE THE PAGE IS AUTOMATICALLY SCORED. AND RESULTS DISPLAYED.
 function showResults() {
-    $("#quiz-area").html("<h2>Correct: " + correct + "</h2>");
-    $("#quiz-area").append("<h2> incorrect: " + incorrect + "</h2>")
+    clearInterval(timer)
+    $("#quiz-area").html("<h2 id='correct'>Correct: " + correct + "</h2>");
+    $("#quiz-area").append("<h2 id='incorrect'> incorrect: " + incorrect + "</h2>")
+    $("#quiz-area").append("<button id='reset'>Reset</button>")
 }
 //THIS HOW THE TIMER IS WORKING. THE COUNTER VAR IS DECREMENTING AND LINE 66 IS HOW THIS IS DISPLAYING ON THE PAGE.
-function countdown() {
-    counter--;
-    if (counter == 0) {
-        stop();
-        alert('TIME IS UP');  
-        number = 120;  
-        for (var i = 0; i < questions.length; i++) {
-            //THIS METHOD IS RUNNING THROUGH THE INPUT FROM THE USER AND "MARKING CORRECT OR INCORRECT"
-            $.each($("input[name='question-" + i + "']:checked"), function () {
-                if ($(this).val() === questions[i].correctAnswer) {
-                    correct++
-                }
-                else {
-                    incorrect++;
-                }
-            })
-    
-        };
 
-        showResults();
-        console.log("Time is up")
-    } 
-    
-    $("#timer").html(counter);
-
-}
 //THIS FUNCTION STOPS THE TIME. THOUGH I AM THINKING THIS BUTTON SHOULD BE REMOVED. 
 // $(document).on("click", "#stop", function () {
 //     console.log("stop timer")
@@ -191,9 +212,11 @@ function countdown() {
 // })
 // THIS FUNCTION ONLY RESETS THE TIMER, THIS NEEDS TO RESRT THE ENTIRE PAGE. 
 $(document).on("click", "#reset", function () {
-    counter = 120;
+    $('#correct').empty();
+    $("#incorrect").empty();
+    counter = 30;
     $("#timer").html(counter);
-    
+
 
     timer = setInterval(countdown, 1000);
     for (var i = 0; i < questions.length; i++) {
