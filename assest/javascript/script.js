@@ -1,6 +1,6 @@
 console.log("testing testing :  2 3 1");
 // FIRST WE NEED TO CLAIM VARIABLES FOR THE GAME.
-var counter = 10;
+var counter = 120;
 var counterRunning = false;
 var timer;
 var startBtn = $("#start");
